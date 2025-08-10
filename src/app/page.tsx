@@ -1,4 +1,5 @@
 import { getPosts } from '@/actions/post.action';
+export const dynamic = "force-dynamic";
 import { getDbUserId } from '@/actions/user.action';
 import CreatePost from '@/components/CreatePost';
 import WhoToFollow from '@/components/WhoToFollow';
@@ -9,7 +10,7 @@ import PostCard from '@/components/PostCard';
 
  async function Home() {
 
-  const user =currentUser();
+  const user = await currentUser();
   const posts =await getPosts();
   const dbUserId=await getDbUserId();
 
