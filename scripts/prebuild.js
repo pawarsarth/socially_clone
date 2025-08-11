@@ -1,15 +1,21 @@
-import { PrismaClient } from "@prisma/client";
+const { execSync } = require('child_process');
+const path = require('path');
 
-const prismaClientSingleton = () => {
-  return new PrismaClient();
-};
+console.log('Starting Prisma prebuild...');
+console.log('Current directory:', process.cwd());
 
-declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
-} & typeof global;
-
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
-
-export default prisma;
-
-if (process.env.NODE_ENV !== "production") globalThis.prismaGlobal = prisma;
+try {
+  // Ensure Prisma is installed
+  const prismaPath = path.join(process.cwd(), 'node_modules', '.bin', 'prisma');
+  console.log(`Prisma path: ${prismaPath}`);
+  
+  // Run Prisma generate
+  console.log('Generating Prisma client...');
+  execSync(`${prismaPath} generate`, { stdio: 'inherit' });
+  
+  console.log('✅ Prisma client generated successfully');
+} catch (error) {
+  console.error('❌ Prisma generation failed:');
+  console.error(error);
+  process.exit(1);
+}
