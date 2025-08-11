@@ -1,7 +1,19 @@
-// import { PrismaClient } from "@prisma/client";
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@prisma/client";
+import path from "path";
 
 const prismaClientSingleton = () => {
+  // Only modify for Vercel deployments
+  if (process.env.VERCEL) {
+    // Get absolute path to Linux binary
+    const binaryPath = path.join(
+      __dirname,
+      "../../node_modules/.prisma/client/query-engine-rhel-openssl-3.0.x"
+    );
+    
+    // Use environment variable instead of internal option
+    process.env.PRISMA_QUERY_ENGINE_BINARY = binaryPath;
+  }
+
   return new PrismaClient();
 };
 
